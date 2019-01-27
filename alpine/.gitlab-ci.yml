@@ -1,0 +1,16 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+  - build-images
+
+before_script:
+  - echo ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+
+build-image:
+  stage: build-images
+  script:
+    - docker build --pull -t "${CI_REGISTRY_IMAGE}:latest" .
+    - docker push "${CI_REGISTRY_IMAGE}:latest"
